@@ -307,23 +307,41 @@
         status.className = 'status error';
       });
 
-    // IP locale (PC) - Solution améliorée
-    function detectLocalIP() {
-      return new Promise((resolve) => {
-        // Essai 1: WebRTC (méthode originale)
-        const pc = new RTCPeerConnection({ iceServers: [] });
-        pc.createDataChannel('');
-        pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(e => console.log(e));
-        
-        pc.onicecandidate = (ice) => {
-          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
-          const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-          const ipMatch = ice.candidate.candidate.match(ipRegex);
-          if (ipMatch) {
-            resolve(ipMatch[1]);
-            pc.onicecandidate = null;
-          }
-        };
+function detectLocalIP() {
+  return new Promise((resolve) => {
+    const pc = new RTCPeerConnection({
+      iceServers: [],
+      iceCandidatePoolSize: 1
+    });
+    
+    pc.createDataChannel('');
+    pc.createOffer()
+      .then(offer => pc.setLocalDescription(offer))
+      .catch(e => console.error("WebRTC error:", e));
+    
+    let found = false;
+    const timeout = setTimeout(() => {
+      if (!found) {
+        pc.close();
+        resolve(null);
+      }
+    }, 2000);
+    
+    pc.onicecandidate = (ice) => {
+      if (!ice.candidate || found) return;
+      
+      const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9:]+:+[a-f0-9:]+)/i;
+      const ipMatch = ice.candidate.candidate.match(ipRegex);
+      
+      if (ipMatch) {
+        found = true;
+        clearTimeout(timeout);
+        pc.close();
+        resolve(ipMatch[1]);
+      }
+    };
+  });
+}
         
         // Timeout après 2 secondes si WebRTC ne fonctionne pas
         setTimeout(() => {
