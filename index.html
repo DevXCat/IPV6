@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IP Detector | Vérificateur d'adresses IP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --dark: #1a1a2e;
+      --darker: #16213e;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --warning: #f8961e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--dark), var(--darker));
+      color: var(--light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transform: translateY(0);
+      opacity: 1;
+      transition: all 0.5s ease;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(to right, var(--primary), var(--success));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--success));
+      border-radius: 2px;
+    }
+
+    .status {
+      font-size: 1.2rem;
+      margin: 2rem 0;
+      padding: 1.2rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: scale(0.95);
+      animation: fadeIn 0.5s ease 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .status.success {
+      background: rgba(76, 201, 240, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .status.error {
+      background: rgba(247, 37, 133, 0.1);
+      border: 1px solid var(--error);
+      color: var(--error);
+    }
+
+    .status.warning {
+      background: rgba(248, 150, 30, 0.1);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    .status i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .ip-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.5s ease 0.6s forwards;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ip-item {
+      margin: 1rem 0;
+      font-size: 1.1rem;
+    }
+
+    .ip-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .ip-label i {
+      margin-right: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .ip-label:hover {
+      color: var(--primary);
+    }
+
+    .ip-label:hover i {
+      transform: translateX(3px);
+    }
+
+    .ip-value {
+      padding: 0.8rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      display: none;
+      animation: fadeIn 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ip-value::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: translateX(-100%);
+    }
+
+    .ip-value.visible {
+      display: block;
+    }
+
+    .ip-value.visible::before {
+      animation: shine 1.5s infinite;
+    }
+
+    @keyframes shine {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: var(--gray);
+      opacity: 0;
+      animation: fadeIn 0.5s ease 1s forwards;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: var(--gray);
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>IPV6 & Local IP Detector</h1>
+    <div class="status" id="status">Checking your IP addresses <span class="spinner"></span></div>
+    
+    <div class="ip-box" id="ip-box">
+      <div class="ip-item">
+        <div class="ip-label" onclick="toggleIP('public-ip')">
+          <i class="fas fa-globe"></i> <strong>Public IP:</strong> (click to reveal)
+        </div>
+        <div class="ip-value" id="public-ip"></div>
+      </div>
+      
+      <div class="ip-item">
+        <div class="ip-label" onclick="toggleIP('local-ip')">
+          <i class="fas fa-network-wired"></i> <strong>Local IP:</strong> (click to reveal)
+        </div>
+        <div class="ip-value" id="local-ip"></div>
+        <div class="note" id="local-ip-note"></div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      Your IP information is kept private and never stored
+    </div>
+  </div>
+
+  <script>
+    const status = document.getElementById("status");
+    const publicIpElement = document.getElementById("public-ip");
+    const localIpElement = document.getElementById("local-ip");
+    const localIpNote = document.getElementById("local-ip-note");
+
+    // Fonction pour basculer l'affichage de l'IP
+    function toggleIP(id) {
+      const element = document.getElementById(id);
+      if (element.textContent.trim() !== "") {
+        element.classList.toggle('visible');
+        
+        // Animation "shine" à chaque affichage
+        if (element.classList.contains('visible')) {
+          element.style.animation = 'none';
+          element.offsetHeight; // Trigger reflow
+          element.style.animation = null; 
+        }
+      }
+    }
+
+    // IP publique (routeur/box)
+    fetch("https://api64.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        const ip = data.ip;
+        const isIPv6 = ip.includes(":");
+        
+        status.innerHTML = isIPv6
+          ? '<i class="fas fa-check-circle"></i>  You have IPV6, you can normally connect to your VPS.'
+          : '<i class="fas fa-times-circle"></i>  You have an IPV4 address, you cannot connect to your VPS.';
+        status.className = isIPv6 ? 'status success' : 'status error';
+        
+        publicIpElement.textContent = ip;
+      })
+      .catch(() => {
+        status.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unable to detect your public IP';
+        status.className = 'status error';
+      });
+
+    // IP locale (PC) - Solution améliorée
+    function detectLocalIP() {
+      return new Promise((resolve) => {
+        // Essai 1: WebRTC (méthode originale)
+        const pc = new RTCPeerConnection({ iceServers: [] });
+        pc.createDataChannel('');
+        pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(e => console.log(e));
+        
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+          const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+          const ipMatch = ice.candidate.candidate.match(ipRegex);
+          if (ipMatch) {
+            resolve(ipMatch[1]);
+            pc.onicecandidate = null;
+          }
+        };
+        
+        // Timeout après 2 secondes si WebRTC ne fonctionne pas
+        setTimeout(() => {
+          // Essai 2: URL de l'hôte (solution de repli limitée)
+          const hostname = window.location.hostname;
+          if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
+            resolve(hostname);
+          } else {
+            // Essai 3: Utilisation de l'API Network Information (expérimental)
+            if (navigator.connection && navigator.connection.localAddress) {
+              resolve(navigator.connection.localAddress);
+            } else {
+              resolve(null);
+            }
+          }
+        }, 2000);
+      });
+    }
+
+    // Détection de l'IP locale
+    detectLocalIP().then(localIP => {
+      if (localIP) {
+        localIpElement.textContent = localIP;
+        localIpNote.textContent = "";
+      } else {
+        localIpElement.textContent = "Not available";
+        localIpNote.innerHTML = '<i class="fas fa-info-circle"></i> Local IP detection might be blocked by your browser for security reasons.';
+        localIpElement.style.color = "var(--warning)";
+      }
+    });
+  </script>
+</body>
+</html>
