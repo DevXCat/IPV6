@@ -237,49 +237,11 @@
       margin-top: 0.5rem;
       font-style: italic;
     }
-
-    .selector {
-      margin: 1.5rem 0;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .ip-selector {
-      padding: 0.8rem 1.5rem;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--light);
-      font-family: 'Poppins', sans-serif;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .ip-selector:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .ip-selector.active {
-      background: var(--primary);
-      border-color: var(--primary-dark);
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>VPS IP Checker</h1>
-    
-    <div class="selector">
-      <button class="ip-selector active" id="ipv4-selector" onclick="selectIPType('ipv4')">
-        <i class="fas fa-network-wired"></i> VPS avec IPv4
-      </button>
-      <button class="ip-selector" id="ipv6-selector" onclick="selectIPType('ipv6')">
-        <i class="fas fa-network-wired"></i> VPS avec IPv6
-      </button>
-    </div>
-    
+    <h1>IPV6 Detector</h1>
     <div class="status" id="status">Checking your IP addresses <span class="spinner"></span></div>
     
     <div class="ip-box" id="ip-box">
@@ -310,48 +272,6 @@
     const publicIpElement = document.getElementById("public-ip");
     const localIpElement = document.getElementById("local-ip");
     const localIpNote = document.getElementById("local-ip-note");
-    const ipv4Selector = document.getElementById("ipv4-selector");
-    const ipv6Selector = document.getElementById("ipv6-selector");
-    
-    let selectedIPType = 'ipv4'; // Par défaut IPv4
-    let publicIP = '';
-    let isPublicIPv6 = false;
-
-    // Sélection du type d'IP du VPS
-    function selectIPType(type) {
-      selectedIPType = type;
-      
-      if (type === 'ipv4') {
-        ipv4Selector.classList.add('active');
-        ipv6Selector.classList.remove('active');
-      } else {
-        ipv4Selector.classList.remove('active');
-        ipv6Selector.classList.add('active');
-      }
-      
-      // Mettre à jour le statut en fonction de la nouvelle sélection
-      updateStatus();
-    }
-    
-    // Mettre à jour le message de statut en fonction de la sélection
-    function updateStatus() {
-      if (!publicIP) return;
-      
-      if (selectedIPType === 'ipv4') {
-        // Pour IPv4, toujours OK
-        status.innerHTML = '<i class="fas fa-check-circle"></i> Votre VPS utilise IPv4 - vous pouvez vous connecter';
-        status.className = 'status success';
-      } else {
-        // Pour IPv6, vérifier si l'utilisateur a IPv6
-        if (isPublicIPv6) {
-          status.innerHTML = '<i class="fas fa-check-circle"></i> Votre VPS utilise IPv6 et vous avez IPv6 - vous pouvez vous connecter';
-          status.className = 'status success';
-        } else {
-          status.innerHTML = '<i class="fas fa-times-circle"></i> Votre VPS utilise IPv6 mais vous n\'avez pas IPv6 - vous ne pouvez pas vous connecter';
-          status.className = 'status error';
-        }
-      }
-    }
 
     // Fonction pour basculer l'affichage de l'IP
     function toggleIP(id) {
@@ -372,11 +292,15 @@
     fetch("https://api64.ipify.org?format=json")
       .then(res => res.json())
       .then(data => {
-        publicIP = data.ip;
-        isPublicIPv6 = publicIP.includes(":");
+        const ip = data.ip;
+        const isIPv6 = ip.includes(":");
         
-        publicIpElement.textContent = publicIP;
-        updateStatus();
+        status.innerHTML = isIPv6
+          ? '<i class="fas fa-check-circle"></i>  You have IPV6, you can normally connect to your VPS.'
+          : '<i class="fas fa-times-circle"></i>  You have an IPV4 address, you cannot connect to your VPS.';
+        status.className = isIPv6 ? 'status success' : 'status error';
+        
+        publicIpElement.textContent = ip;
       })
       .catch(() => {
         status.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unable to detect your public IP';
