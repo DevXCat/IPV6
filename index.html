@@ -52,6 +52,8 @@
       border: 1px solid rgba(255, 255, 255, 0.1);
       transform: translateY(0);
       opacity: 1;
+      transition: all 0.5s ease;
+      animation: fadeInUp 0.8s ease;
     }
 
     @keyframes fadeInUp {
@@ -95,9 +97,18 @@
       border-radius: 12px;
       display: flex;
       align-items: center;
-      justify-content: center;;
+      justify-content: center;
+      transition: all 0.3s ease;
       opacity: 0;
       transform: scale(0.95);
+      animation: fadeIn 0.5s ease 0.3s forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .status.success {
@@ -131,6 +142,7 @@
       text-align: left;
       opacity: 0;
       transform: translateY(10px);
+      animation: fadeInUp 0.5s ease 0.6s forwards;
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
@@ -253,10 +265,7 @@
       Your IP information is kept private and never stored
     </div>
   </div>
-            <div class="note">
-      <i class="fas fa-info-circle"></i> Local IP detection is not available for web applications. <br>
-      This tool only checks if you have an IPV6 address which is required for VPS connection.
-    </div>
+
     
   <script>
     const status = document.getElementById("status");
