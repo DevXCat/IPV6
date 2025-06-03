@@ -342,8 +342,8 @@
             const isIPv6 = ip.includes(":");
             
             status.innerHTML = isIPv6
-              ? '<i class="fas fa-check-circle"></i> You have IPV6, you can normally connect to your VPS.'
-              : '<i class="fas fa-times-circle"></i> You have an IPV4 address, you cannot connect to your VPS.';
+              ? '<i class="fas fa-check-circle"></i> You have IPV6 connectivity'
+              : '<i class="fas fa-times-circle"></i> You have an IPV4 address only';
             status.className = isIPv6 ? 'status success' : 'status error';
             
             publicIpElement.textContent = ip;
