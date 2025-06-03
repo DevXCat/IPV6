@@ -6,19 +6,21 @@
   <title>IP Detector | Vérificateur d'adresses IP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary: #4361ee;
-      --primary-dark: #3a56d4;
+      --primary: #3a86ff;
+      --primary-dark: #2667cc;
       --success: #4cc9f0;
-      --error: #f72585;
-      --dark: #1a1a2e;
-      --darker: #16213e;
+      --error: #ff4d6d;
+      --dark: #212529;
+      --darker: #1a1a2e;
       --light: #f8f9fa;
       --gray: #6c757d;
-      --warning: #f8961e;
+      --warning: #ff9e00;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
     }
 
     * {
@@ -28,8 +30,8 @@
     }
 
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, var(--dark), var(--darker));
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark);
       color: var(--light);
       display: flex;
       justify-content: center;
@@ -37,77 +39,73 @@
       min-height: 100vh;
       flex-direction: column;
       text-align: center;
-      padding: 2rem;
+      padding: 1rem;
       line-height: 1.6;
     }
 
     .container {
       width: 100%;
       max-width: 800px;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 3rem 2rem;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transform: translateY(0);
-      opacity: 1;
-      transition: all 0.5s ease;
-      animation: fadeInUp 0.8s ease;
+      background: var(--card-bg);
+      backdrop-filter: blur(8px);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      transition: all 0.4s ease;
+      animation: fadeIn 0.6s ease-out;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       margin-bottom: 1.5rem;
       font-weight: 600;
-      background: linear-gradient(to right, var(--primary), var(--success));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
       position: relative;
       display: inline-block;
+      padding-bottom: 0.5rem;
     }
 
     h1::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: linear-gradient(to right, var(--primary), var(--success));
-      border-radius: 2px;
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    h1:hover::after {
+      width: 100px;
     }
 
     .status {
-      font-size: 1.2rem;
-      margin: 2rem 0;
-      padding: 1.2rem;
-      border-radius: 12px;
+      font-size: 1.1rem;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.3s ease;
       opacity: 0;
-      transform: scale(0.95);
-      animation: fadeIn 0.5s ease 0.3s forwards;
+      transform: translateY(5px);
+      animation: fadeInUp 0.5s ease 0.3s forwards;
     }
 
-    @keyframes fadeIn {
+    @keyframes fadeInUp {
       to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
       }
     }
 
@@ -118,24 +116,24 @@
     }
 
     .status.error {
-      background: rgba(247, 37, 133, 0.1);
+      background: rgba(255, 77, 109, 0.1);
       border: 1px solid var(--error);
       color: var(--error);
     }
 
     .status.warning {
-      background: rgba(248, 150, 30, 0.1);
+      background: rgba(255, 158, 0, 0.1);
       border: 1px solid var(--warning);
       color: var(--warning);
     }
 
     .status i {
       margin-right: 10px;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
     }
 
     .ip-box {
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--card-bg);
       border-radius: 12px;
       padding: 1.5rem;
       margin-top: 1.5rem;
@@ -143,12 +141,12 @@
       opacity: 0;
       transform: translateY(10px);
       animation: fadeInUp 0.5s ease 0.6s forwards;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--card-border);
     }
 
     .ip-item {
       margin: 1rem 0;
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
 
     .ip-label {
@@ -157,11 +155,12 @@
       margin-bottom: 0.5rem;
       cursor: pointer;
       user-select: none;
+      transition: color 0.2s ease;
     }
 
     .ip-label i {
       margin-right: 10px;
-      transition: transform 0.3s ease;
+      transition: transform 0.2s ease;
     }
 
     .ip-label:hover {
@@ -174,38 +173,37 @@
 
     .ip-value {
       padding: 0.8rem;
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.15);
       border-radius: 8px;
-      font-family: 'Courier New', monospace;
+      font-family: 'Roboto Mono', monospace;
       display: none;
       animation: fadeIn 0.3s ease;
       position: relative;
       overflow: hidden;
-    }
-
-    .ip-value::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transform: translateX(-100%);
+      font-size: 0.95rem;
     }
 
     .ip-value.visible {
       display: block;
     }
 
-    .ip-value.visible::before {
-      animation: shine 1.5s infinite;
+    .ip-value.copied::after {
+      content: 'Copié!';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      animation: fadeOut 1.5s ease forwards;
     }
 
-    @keyframes shine {
-      100% {
-        transform: translateX(100%);
-      }
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .footer {
@@ -218,9 +216,9 @@
 
     .spinner {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
       border-top-color: var(--primary);
       animation: spin 1s ease-in-out infinite;
@@ -232,10 +230,25 @@
     }
 
     .note {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: var(--gray);
       margin-top: 0.5rem;
       font-style: italic;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container {
+        padding: 2rem 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .ip-box {
+        padding: 1.2rem;
+      }
     }
   </style>
 </head>
@@ -252,10 +265,15 @@
         <div class="ip-value" id="public-ip"></div>
       </div>
       
+      <div class="ip-item">
+        <div class="ip-label" onclick="toggleIP('local-ip')">
+          <i class="fas fa-network-wired"></i> <strong>Local IP:</strong> (click to reveal)
+        </div>
         <div class="ip-value" id="local-ip"></div>
         <div class="note" id="local-ip-note"></div>
       </div>
     </div>
+  </div>
 
   <script>
     const status = document.getElementById("status");
@@ -269,11 +287,15 @@
       if (element.textContent.trim() !== "") {
         element.classList.toggle('visible');
         
-        // Animation "shine" à chaque affichage
+        // Copier l'IP dans le clipboard
         if (element.classList.contains('visible')) {
-          element.style.animation = 'none';
-          element.offsetHeight; // Trigger reflow
-          element.style.animation = null; 
+          navigator.clipboard.writeText(element.textContent)
+            .then(() => {
+              element.classList.add('copied');
+              setTimeout(() => {
+                element.classList.remove('copied');
+              }, 1500);
+            });
         }
       }
     }
@@ -383,7 +405,6 @@
       } else {
         localIpElement.textContent = "Not available";
         localIpNote.innerHTML = '<i class="fas fa-info-circle"></i> Local IP detection might be blocked by your browser for security reasons.';
-        localIpElement.style.color = "var(--warning)";
       }
     });
 
