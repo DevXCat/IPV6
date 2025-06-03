@@ -266,7 +266,6 @@
     </div>
   </div>
 
-    
   <script>
     const status = document.getElementById("status");
     const publicIpElement = document.getElementById("public-ip");
@@ -288,76 +287,102 @@
       }
     }
 
-    // IP publique (routeur/box)
-    fetch("https://api64.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => {
-        const ip = data.ip;
-        const isIPv6 = ip.includes(":");
-        
-        status.innerHTML = isIPv6
-          ? '<i class="fas fa-check-circle"></i>  You have IPV6, you can normally connect to your VPS.'
-          : '<i class="fas fa-times-circle"></i>  You have an IPV4 address, you cannot connect to your VPS.';
-        status.className = isIPv6 ? 'status success' : 'status error';
-        
-        publicIpElement.textContent = ip;
-      })
-      .catch(() => {
-        status.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unable to detect your public IP';
-        status.className = 'status error';
-      });
+    // Fonction pour détecter l'IP publique avec plusieurs solutions de repli
+    function detectPublicIP() {
+      // Liste des API possibles avec leurs endpoints
+      const ipApis = [
+        'https://api.ipify.org?format=json',
+        'https://api64.ipify.org?format=json',
+        'https://ipapi.co/json',
+        'https://ipinfo.io/json',
+        'https://api.my-ip.io/ip.json'
+      ];
 
-function detectLocalIP() {
-  return new Promise((resolve) => {
-    const pc = new RTCPeerConnection({
-      iceServers: [],
-      iceCandidatePoolSize: 1
-    });
-    
-    pc.createDataChannel('');
-    pc.createOffer()
-      .then(offer => pc.setLocalDescription(offer))
-      .catch(e => console.error("WebRTC error:", e));
-    
-    let found = false;
-    const timeout = setTimeout(() => {
-      if (!found) {
-        pc.close();
-        resolve(null);
-      }
-    }, 2000);
-    
-    pc.onicecandidate = (ice) => {
-      if (!ice.candidate || found) return;
-      
-      const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9:]+:+[a-f0-9:]+)/i;
-      const ipMatch = ice.candidate.candidate.match(ipRegex);
-      
-      if (ipMatch) {
-        found = true;
-        clearTimeout(timeout);
-        pc.close();
-        resolve(ipMatch[1]);
-      }
-    };
-  });
-        
-        // Timeout après 2 secondes si WebRTC ne fonctionne pas
-        setTimeout(() => {
-          // Essai 2: URL de l'hôte (solution de repli limitée)
-          const hostname = window.location.hostname;
-          if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1') {
-            resolve(hostname);
-          } else {
-            // Essai 3: Utilisation de l'API Network Information (expérimental)
-            if (navigator.connection && navigator.connection.localAddress) {
-              resolve(navigator.connection.localAddress);
+      // Essayer chaque API jusqu'à ce qu'une fonctionne
+      const tryApi = (index) => {
+        if (index >= ipApis.length) {
+          // Toutes les API ont échoué
+          status.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Unable to detect your public IP';
+          status.className = 'status error';
+          publicIpElement.textContent = "Not available";
+          return;
+        }
+
+        fetch(ipApis[index])
+          .then(res => {
+            if (!res.ok) throw new Error('API error');
+            return res.json();
+          })
+          .then(data => {
+            let ip;
+            // Gérer les différents formats de réponse
+            if (data.ip) {
+              ip = data.ip;
+            } else if (data.ipv6) {
+              ip = data.ipv6;
+            } else if (typeof data === 'string') {
+              ip = data;
             } else {
-              resolve(null);
+              throw new Error('Invalid response format');
             }
+
+            const isIPv6 = ip.includes(":");
+            
+            status.innerHTML = isIPv6
+              ? '<i class="fas fa-check-circle"></i> You have IPV6, you can normally connect to your VPS.'
+              : '<i class="fas fa-times-circle"></i> You have an IPV4 address, you cannot connect to your VPS.';
+            status.className = isIPv6 ? 'status success' : 'status error';
+            
+            publicIpElement.textContent = ip;
+          })
+          .catch(() => {
+            // Essayer l'API suivante
+            tryApi(index + 1);
+          });
+      };
+
+      // Commencer par la première API
+      tryApi(0);
+    }
+
+    // Fonction pour détecter l'IP locale avec WebRTC
+    function detectLocalIP() {
+      return new Promise((resolve) => {
+        // Solution 1: WebRTC (la plus fiable)
+        const pc = new RTCPeerConnection({
+          iceServers: [],
+          iceCandidatePoolSize: 1
+        });
+        
+        pc.createDataChannel('');
+        pc.createOffer()
+          .then(offer => pc.setLocalDescription(offer))
+          .catch(e => console.error("WebRTC error:", e));
+        
+        let found = false;
+        const timeout = setTimeout(() => {
+          if (!found) {
+            pc.close();
+            // Solution de repli si WebRTC échoue
+            resolve(null);
           }
         }, 2000);
-      };
+        
+        pc.onicecandidate = (ice) => {
+          if (!ice.candidate || found) return;
+          
+          const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9:]+:+[a-f0-9:]+)/i;
+          const ipMatch = ice.candidate.candidate.match(ipRegex);
+          
+          if (ipMatch) {
+            found = true;
+            clearTimeout(timeout);
+            pc.close();
+            resolve(ipMatch[1]);
+          }
+        };
+      });
+    }
 
     // Détection de l'IP locale
     detectLocalIP().then(localIP => {
@@ -370,6 +395,9 @@ function detectLocalIP() {
         localIpElement.style.color = "var(--warning)";
       }
     });
+
+    // Détection de l'IP publique
+    detectPublicIP();
   </script>
 </body>
 </html>
