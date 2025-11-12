@@ -19,6 +19,7 @@
       --light: #f8f9fa;
       --gray: #6c757d;
       --warning: #f8961e;
+      --info: #7209b7;
     }
 
     * {
@@ -129,6 +130,12 @@
       color: var(--warning);
     }
 
+    .status.info {
+      background: rgba(114, 9, 183, 0.1);
+      border: 1px solid var(--info);
+      color: var(--info);
+    }
+
     .status i {
       margin-right: 10px;
       font-size: 1.5rem;
@@ -237,12 +244,221 @@
       margin-top: 0.5rem;
       font-style: italic;
     }
+
+    /* Nouveaux styles pour les fonctionnalités ajoutées */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #3bb5d8;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #e0850c;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .details-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.5s ease 0.8s forwards;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+    }
+
+    .details-box.visible {
+      display: block;
+    }
+
+    .details-item {
+      margin: 0.8rem 0;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.8rem;
+    }
+
+    .details-label {
+      font-weight: 500;
+      color: var(--gray);
+    }
+
+    .details-value {
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      margin-left: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+      color: var(--success);
+      transform: scale(1.1);
+    }
+
+    .copy-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--success);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateX(100px);
+      transition: all 0.3s ease;
+    }
+
+    .copy-notification.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .history-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: left;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeInUp 0.5s ease 0.8s forwards;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+    }
+
+    .history-box.visible {
+      display: block;
+    }
+
+    .history-item {
+      margin: 0.8rem 0;
+      padding: 0.8rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-time {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .history-ip {
+      font-family: 'Courier New', monospace;
+      font-weight: 500;
+    }
+
+    .clear-history {
+      background: transparent;
+      border: 1px solid var(--error);
+      color: var(--error);
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .clear-history:hover {
+      background: var(--error);
+      color: white;
+    }
+
+    .refresh-info {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      background: linear-gradient(to right, var(--primary), var(--success));
+      width: 0%;
+      transition: width 0.5s ease;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>IPV6 Detector</h1>
     <div class="status" id="status">Checking your IP addresses <span class="spinner"></span></div>
+    
+    <div class="controls">
+      <button class="btn btn-primary" onclick="toggleDetails()">
+        <i class="fas fa-info-circle"></i> More Details
+      </button>
+      <button class="btn btn-success" onclick="refreshIP()">
+        <i class="fas fa-sync-alt"></i> Refresh
+      </button>
+      <button class="btn btn-warning" onclick="toggleHistory()">
+        <i class="fas fa-history"></i> History
+      </button>
+    </div>
     
     <div class="ip-box" id="ip-box">
       <div class="ip-item">
@@ -252,17 +468,101 @@
         <div class="ip-value" id="public-ip"></div>
       </div>
       
+      <div class="ip-item">
+        <div class="ip-label" onclick="toggleIP('local-ip')">
+          <i class="fas fa-network-wired"></i> <strong>Local IP:</strong> (click to reveal)
+        </div>
         <div class="ip-value" id="local-ip"></div>
         <div class="note" id="local-ip-note"></div>
       </div>
     </div>
+    
+    <div class="details-box" id="details-box">
+      <h3><i class="fas fa-info-circle"></i> Connection Details</h3>
+      <div class="details-item">
+        <span class="details-label">IP Type:</span>
+        <span class="details-value" id="ip-type">Checking...</span>
+      </div>
+      <div class="details-item">
+        <span class="details-label">ISP:</span>
+        <span class="details-value" id="isp">Checking...</span>
+      </div>
+      <div class="details-item">
+        <span class="details-label">Location:</span>
+        <span class="details-value" id="location">Checking...</span>
+      </div>
+      <div class="details-item">
+        <span class="details-label">Timezone:</span>
+        <span class="details-value" id="timezone">Checking...</span>
+      </div>
+      <div class="details-item">
+        <span class="details-label">User Agent:</span>
+        <span class="details-value" id="user-agent"></span>
+      </div>
+    </div>
+    
+    <div class="history-box" id="history-box">
+      <h3><i class="fas fa-history"></i> IP History</h3>
+      <div id="history-list"></div>
+      <button class="clear-history" onclick="clearHistory()">
+        <i class="fas fa-trash"></i> Clear History
+      </button>
+    </div>
+    
+    <div class="refresh-info" id="refresh-info">
+      <i class="fas fa-clock"></i> Last updated: <span id="last-updated">Just now</span>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    
+    <div class="footer">
+      <p>IP Detector &copy; 2023 | All information is retrieved from your browser</p>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copy-notification">
+    <i class="fas fa-check-circle"></i> Copied to clipboard!
+  </div>
 
   <script>
     const status = document.getElementById("status");
     const publicIpElement = document.getElementById("public-ip");
     const localIpElement = document.getElementById("local-ip");
     const localIpNote = document.getElementById("local-ip-note");
-
+    const detailsBox = document.getElementById("details-box");
+    const historyBox = document.getElementById("history-box");
+    const historyList = document.getElementById("history-list");
+    const lastUpdated = document.getElementById("last-updated");
+    const progressBar = document.getElementById("progress");
+    const copyNotification = document.getElementById("copy-notification");
+    
+    // Éléments de détails
+    const ipTypeElement = document.getElementById("ip-type");
+    const ispElement = document.getElementById("isp");
+    const locationElement = document.getElementById("location");
+    const timezoneElement = document.getElementById("timezone");
+    const userAgentElement = document.getElementById("user-agent");
+    
+    // Stockage des données d'historique
+    let ipHistory = JSON.parse(localStorage.getItem('ipHistory')) || [];
+    
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Afficher l'historique s'il existe
+      displayHistory();
+      
+      // Afficher l'user agent
+      userAgentElement.textContent = navigator.userAgent;
+      
+      // Détection de l'IP publique
+      detectPublicIP();
+      
+      // Détection de l'IP locale
+      detectLocalIP();
+    });
+    
     // Fonction pour basculer l'affichage de l'IP
     function toggleIP(id) {
       const element = document.getElementById(id);
@@ -277,7 +577,124 @@
         }
       }
     }
-
+    
+    // Fonction pour copier l'IP dans le presse-papier
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        // Afficher la notification
+        copyNotification.classList.add('show');
+        setTimeout(() => {
+          copyNotification.classList.remove('show');
+        }, 2000);
+      });
+    }
+    
+    // Fonction pour afficher/masquer les détails
+    function toggleDetails() {
+      detailsBox.classList.toggle('visible');
+    }
+    
+    // Fonction pour afficher/masquer l'historique
+    function toggleHistory() {
+      historyBox.classList.toggle('visible');
+    }
+    
+    // Fonction pour rafraîchir les IP
+    function refreshIP() {
+      // Réinitialiser l'affichage
+      status.innerHTML = 'Checking your IP addresses <span class="spinner"></span>';
+      status.className = 'status';
+      publicIpElement.textContent = '';
+      localIpElement.textContent = '';
+      localIpNote.textContent = '';
+      
+      // Réinitialiser les détails
+      ipTypeElement.textContent = 'Checking...';
+      ispElement.textContent = 'Checking...';
+      locationElement.textContent = 'Checking...';
+      timezoneElement.textContent = 'Checking...';
+      
+      // Animation de la barre de progression
+      progressBar.style.width = '0%';
+      setTimeout(() => {
+        progressBar.style.width = '100%';
+      }, 100);
+      
+      // Redémarrer la détection
+      detectPublicIP();
+      detectLocalIP();
+      
+      // Mettre à jour l'heure
+      updateLastUpdated();
+    }
+    
+    // Fonction pour mettre à jour l'heure de dernière mise à jour
+    function updateLastUpdated() {
+      const now = new Date();
+      lastUpdated.textContent = now.toLocaleTimeString();
+    }
+    
+    // Fonction pour afficher l'historique
+    function displayHistory() {
+      if (ipHistory.length === 0) {
+        historyList.innerHTML = '<p>No IP history yet.</p>';
+        return;
+      }
+      
+      historyList.innerHTML = '';
+      ipHistory.slice(-5).reverse().forEach(item => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.innerHTML = `
+          <div>
+            <div class="history-ip">${item.ip}</div>
+            <div class="history-time">${item.time}</div>
+          </div>
+          <button class="copy-btn" onclick="copyToClipboard('${item.ip}')">
+            <i class="fas fa-copy"></i>
+          </button>
+        `;
+        historyList.appendChild(historyItem);
+      });
+    }
+    
+    // Fonction pour ajouter une IP à l'historique
+    function addToHistory(ip) {
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      
+      // Vérifier si l'IP est déjà dans l'historique
+      const existingIndex = ipHistory.findIndex(item => item.ip === ip);
+      if (existingIndex !== -1) {
+        // Mettre à jour l'heure si l'IP existe déjà
+        ipHistory[existingIndex].time = timeString;
+      } else {
+        // Ajouter une nouvelle entrée
+        ipHistory.push({
+          ip: ip,
+          time: timeString
+        });
+        
+        // Limiter l'historique à 10 entrées
+        if (ipHistory.length > 10) {
+          ipHistory = ipHistory.slice(-10);
+        }
+      }
+      
+      // Sauvegarder dans le localStorage
+      localStorage.setItem('ipHistory', JSON.stringify(ipHistory));
+      
+      // Mettre à jour l'affichage
+      displayHistory();
+    }
+    
+    // Fonction pour effacer l'historique
+    function clearHistory() {
+      ipHistory = [];
+      localStorage.removeItem('ipHistory');
+      displayHistory();
+    }
+    
     // Fonction pour détecter l'IP publique avec plusieurs solutions de repli
     function detectPublicIP() {
       // Liste des API possibles avec leurs endpoints
@@ -325,6 +742,29 @@
             status.className = isIPv6 ? 'status success' : 'status error';
             
             publicIpElement.textContent = ip;
+            
+            // Ajouter un bouton de copie
+            publicIpElement.innerHTML = `${ip} <button class="copy-btn" onclick="copyToClipboard('${ip}')"><i class="fas fa-copy"></i></button>`;
+            
+            // Ajouter à l'historique
+            addToHistory(ip);
+            
+            // Mettre à jour les détails si disponibles
+            if (data.org) {
+              ispElement.textContent = data.org;
+            }
+            if (data.city && data.country) {
+              locationElement.textContent = `${data.city}, ${data.country}`;
+            }
+            if (data.timezone) {
+              timezoneElement.textContent = data.timezone;
+            }
+            
+            // Mettre à jour le type d'IP
+            ipTypeElement.textContent = isIPv6 ? 'IPv6' : 'IPv4';
+            
+            // Mettre à jour l'heure
+            updateLastUpdated();
           })
           .catch(() => {
             // Essayer l'API suivante
@@ -378,7 +818,7 @@
     // Détection de l'IP locale
     detectLocalIP().then(localIP => {
       if (localIP) {
-        localIpElement.textContent = localIP;
+        localIpElement.innerHTML = `${localIP} <button class="copy-btn" onclick="copyToClipboard('${localIP}')"><i class="fas fa-copy"></i></button>`;
         localIpNote.textContent = "";
       } else {
         localIpElement.textContent = "Not available";
@@ -386,9 +826,6 @@
         localIpElement.style.color = "var(--warning)";
       }
     });
-
-    // Détection de l'IP publique
-    detectPublicIP();
   </script>
 </body>
 </html>
